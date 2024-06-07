@@ -1,7 +1,8 @@
-from flask import Flask,render_template,request
+from flask import Flask,render_template,request,redirect,session
 from db import Database
-
+import api
 app = Flask(__name__)
+
 dbo=Database()
 
 @app.route('/')
@@ -12,7 +13,7 @@ def index():
 @app.route('/register')
 def register():
     return render_template("register.html")
-_
+
 
 @app.route('/perform_registration' , methods=["post"])
 def perform_registration():
@@ -35,12 +36,35 @@ def perform_login():
     password=request.form.get("User_Password")
     response=dbo.search(email,password)
     if response:
-        return "Login Sucessfull And welcome to the land"
+        return redirect("/profile")
     else:
         return render_template("login.html",message="Invalid Password")
     
+@app.route("/profile")
+def profile():
+    return render_template('profile.html')
+
+@app.route("/ner")
+def ner():
+    if session:
+        return render_template("ner.html")
+    else:
+        return redirect("/")
+ 
+@app.route("/perform_ner",methods=["post"])
+def perform_ner():
+    text=request.form.get("ner_text")
+    responce=api.ner(text)
+    print(responce)
+    result=""
+    for i in responce:
+        result=result + i["name"] + " " + i["category"] + "\n"
+    return render_template("ner.html" ,result=result)
     
-app.run(port=5003,debug=True)
+    
+if __name__ == "__main__":
+    
+    app.run(port=5000,debug=True)
 
 
 

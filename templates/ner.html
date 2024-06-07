@@ -6,10 +6,16 @@
     <title>Profile</title>
 </head>
 <body>
-  <form action="">
-    <label for="">Type Your text here</label>
-    <textarea name="" ></textarea>
+  <form action="/perform_ner" method="post">
+    <label for="">Type Your text here</label><br>
+    <textarea name="ner_text" ></textarea><br>
     <input type="submit" value="Perform Ner">
   </form>
+  {% if result %}
+  <p>{{result}}</p>
+  {% endif %}
+
+
+
 </body>
 </html>
